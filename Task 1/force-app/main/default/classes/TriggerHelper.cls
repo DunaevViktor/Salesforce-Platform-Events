@@ -1,8 +1,6 @@
 public with sharing class TriggerHelper {
     
-    public List<List<messageClass>> findUpdatedFields(Map<Id, Account> oldAccounts, Map<Id, Account> newAccounts) {
-
-        List<List<messageClass>> allAccMessages = new List<List<messageClass>>();
+    public void findUpdatedFields(Map<Id, Account> oldAccounts, Map<Id, Account> newAccounts) {
 
         SObjectType objType = Schema.getGlobalDescribe().get('Account');
         Map<String, Schema.SObjectField> fieldMap = objType.getDescribe().fields.getMap();
@@ -25,21 +23,17 @@ public with sharing class TriggerHelper {
                     accMessages.add(mes);
                 }
             }
-            //System.debug('from help: ' + accMessages);
-            allAccMessages.add(accMessages);
+            createEvent(accMessages);
         }
-        return allAccMessages;
     }
 
     public void createEvent(List<messageClass> accMessages){
-        //System.debug(accMessages);
-        //Info__c
+
         String info = '';
         for(Integer i=0; i<accMessages.size(); i++){
             info = info + ' ' + accMessages[i].filedName + ': ' + 
             accMessages[i].oldValue + ' -> ' + accMessages[i].newValue;
         }
-        System.debug(info);
 
         UpdateAccountPE__e newEvent = new UpdateAccountPE__e(Info__c = info);
         Database.SaveResult sr = EventBus.publish(newEvent);
