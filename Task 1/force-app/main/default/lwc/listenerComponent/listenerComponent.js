@@ -7,8 +7,6 @@ export default class ListenerComponent extends LightningElement {
     subscription = {};
 
     connectedCallback() {  
-        
-        console.log('2');
 
         const messageCallback = (response) => {
             const message = response['data']['payload']['Info__c'];
@@ -33,6 +31,7 @@ export default class ListenerComponent extends LightningElement {
         this.dispatchEvent(event);
     }
 
+    //The call is not happening?
     disconnectedCallback() {
         unsubscribe(this.subscription, response => {
             console.log('unsubscribe() response: ', JSON.stringify(response));

@@ -37,13 +37,5 @@ public with sharing class TriggerHelper {
 
         UpdateAccountPE__e newEvent = new UpdateAccountPE__e(Info__c = info);
         Database.SaveResult sr = EventBus.publish(newEvent);
-
-        if (sr.isSuccess()) {
-            System.debug('Successfully published event.');
-        } else {
-            for(Database.Error err : sr.getErrors()) {
-                System.debug('Error returned: ' + err.getStatusCode() + ' - ' + err.getMessage());
-            }
-        }
     }
 }
