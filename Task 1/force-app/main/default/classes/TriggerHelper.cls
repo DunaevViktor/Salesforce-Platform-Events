@@ -5,6 +5,8 @@ public with sharing class TriggerHelper {
         SObjectType objType = Schema.getGlobalDescribe().get('Account');
         Map<String, Schema.SObjectField> fieldMap = objType.getDescribe().fields.getMap();
 
+        List<UpdateAccountPE__e> forPublishPE = new List<UpdateAccountPE__e>();
+
         for(Id accountId: newAccounts.keySet()){
             List<messageClass> accMessages = new List<messageClass>();
             Account oldAccount = oldAccounts.get(accountId);
@@ -23,11 +25,13 @@ public with sharing class TriggerHelper {
                     accMessages.add(mes);
                 }
             }
-            createEvent(accMessages);
+            forPublishPE.add(createEvent(accMessages));
         }
+
+        List<Database.SaveResult> sr = EventBus.publish(forPublishPE);
     }
 
-    public void createEvent(List<messageClass> accMessages){
+    public UpdateAccountPE__e createEvent(List<messageClass> accMessages){
 
         String info = '';
         for(Integer i=0; i<accMessages.size(); i++){
@@ -36,6 +40,6 @@ public with sharing class TriggerHelper {
         }
 
         UpdateAccountPE__e newEvent = new UpdateAccountPE__e(Info__c = info);
-        Database.SaveResult sr = EventBus.publish(newEvent);
+        return newEvent;
     }
 }
