@@ -25,13 +25,13 @@ public with sharing class TriggerHelper {
                     accMessages.add(mes);
                 }
             }
-            forPublishPE.add(createEvent(accMessages));
+            forPublishPE.add(createEvent(accMessages, newAccount.Id));
         }
 
         List<Database.SaveResult> sr = EventBus.publish(forPublishPE);
     }
 
-    public UpdateAccountPE__e createEvent(List<messageClass> accMessages){
+    public UpdateAccountPE__e createEvent(List<messageClass> accMessages, Id accountId){
 
         String info = '';
         for(Integer i=0; i<accMessages.size(); i++){
@@ -39,7 +39,7 @@ public with sharing class TriggerHelper {
             accMessages[i].oldValue + ' -> ' + accMessages[i].newValue;
         }
 
-        UpdateAccountPE__e newEvent = new UpdateAccountPE__e(Info__c = info);
+        UpdateAccountPE__e newEvent = new UpdateAccountPE__e(Info__c = info, AccountId__c = accountId);
         return newEvent;
     }
 }
