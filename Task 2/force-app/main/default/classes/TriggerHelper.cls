@@ -28,4 +28,21 @@ public with sharing class TriggerHelper {
         Group publicGroup = [SELECT Id, Name FROM Group WHERE Name = :groupName LIMIT 1];
         return publicgroup.Id;
     }
+
+    public static void changeRecordAccess(Map<Id, Account> oldAccounts, List<Account> newAccounts){
+
+        List<Account> changedTeamAccounts = new List<account>();
+
+        for(Account newAccount: newAccounts){
+            Account oldAccount = oldAccounts.get(newAccount.Id);
+
+            if(newAccount.TeamName__c != oldAccount.TeamName__c){
+                changedTeamAccounts.add(newAccount);
+            }
+        }
+
+        if(!changedTeamAccounts.isEmpty()){
+            giveRecordAccess(changedTeamAccounts);
+        }
+    }
 }

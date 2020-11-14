@@ -5,7 +5,7 @@ trigger AccountTrigger on Account (after insert, after update) {
     }
 
     if(Trigger.isUpdate){
-        System.debug('update logic');
+        TriggerHelper.changeRecordAccess(Trigger.oldMap, Trigger.new);
     }
 
 }
