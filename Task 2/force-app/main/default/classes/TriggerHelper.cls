@@ -4,9 +4,13 @@ public with sharing class TriggerHelper {
 
     public static void giveRecordAccess(List<Account> accounts){
 
+        List<Id> accountIds = getAccountIds(accounts);
+        List<AccountShare> sharesToDelete = getAccountShares(accountIds);
+        Database.delete(sharesToDelete, false);
+
         List<AccountShare> shares = new List<AccountShare>();
         List<Group> groups = getPublicGroups();
-    
+
         for(Account account: accounts){
             for(Group publicGroup: groups){
                 if(account.TeamName__c == publicGroup.Name){
@@ -29,10 +33,6 @@ public with sharing class TriggerHelper {
         }
     }
 
-    public static List<Group> getPublicGroups(){
-        return [SELECT Id, Name FROM Group];
-    }
-
     public static void changeRecordAccess(Map<Id, Account> oldAccounts, List<Account> newAccounts){
 
         List<Account> changedTeamAccounts = new List<account>();
@@ -48,5 +48,24 @@ public with sharing class TriggerHelper {
         if(!changedTeamAccounts.isEmpty()){
             giveRecordAccess(changedTeamAccounts);
         }
+    }
+
+    public static List<Group> getPublicGroups(){
+        return [SELECT Id, Name FROM Group];
+    }
+
+    public static List<Id> getAccountIds(List<Account> accounts){
+        List<Id> accountIds = new List<Id>();
+        for(Account account: accounts){
+            accountIds.add(account.Id);
+        }
+
+        return accountIds;
+    }
+
+    public static List<AccountShare> getAccountShares(List<Id> accountIds){
+        return [SELECT  Id, AccountId, AccountAccessLevel, UserOrGroupId,
+                        OpportunityAccessLevel, CaseAccessLevel 
+                        FROM AccountShare WHERE AccountId IN: accountIds];
     }
 }
