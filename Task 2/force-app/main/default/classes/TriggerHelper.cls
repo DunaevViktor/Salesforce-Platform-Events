@@ -40,7 +40,7 @@ public with sharing class TriggerHelper {
         for(Account newAccount: newAccounts){
             Account oldAccount = oldAccounts.get(newAccount.Id);
 
-            if(newAccount.TeamName__c != oldAccount.TeamName__c){
+            if((newAccount.TeamName__c != oldAccount.TeamName__c) || (newAccount.OwnerId != oldAccount.OwnerId)){
                 changedTeamAccounts.add(newAccount);
             }
         }
