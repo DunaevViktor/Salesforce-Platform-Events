@@ -8,7 +8,7 @@ public with sharing class TriggerHelper {
         List<UpdateAccountPE__e> forPublishPE = new List<UpdateAccountPE__e>();
 
         for(Id accountId: newAccounts.keySet()){
-            List<messageClass> accMessages = new List<messageClass>();
+            List<MessageItem> accMessages = new List<MessageItem>();
             Account oldAccount = oldAccounts.get(accountId);
             Account newAccount = newAccounts.get(accountId);
 
@@ -21,7 +21,7 @@ public with sharing class TriggerHelper {
                     Object oldValue = oldAccount.get(field);
                     Object newValue = newAccount.get(field);
 
-                    messageClass mes = new messageClass(fieldName, oldValue, newValue);
+                    MessageItem mes = new MessageItem(fieldName, oldValue, newValue);
                     accMessages.add(mes);
                 }
             }
@@ -31,7 +31,7 @@ public with sharing class TriggerHelper {
         List<Database.SaveResult> sr = EventBus.publish(forPublishPE);
     }
 
-    public UpdateAccountPE__e createEvent(List<messageClass> accMessages, Id accountId){
+    public UpdateAccountPE__e createEvent(List<MessageItem> accMessages, Id accountId){
 
         String info = '';
         for(Integer i=0; i<accMessages.size(); i++){
