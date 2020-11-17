@@ -10,8 +10,8 @@ export default class ListenerComponent extends LightningElement {
     connectedCallback() {  
 
         const messageCallback = (response) => {
-            const message = response['data']['payload']['Info__c'];
-            var eventRecordId = response['data']['payload']['AccountId__c'];
+            var message = response.data.payload.Info__c;
+            var eventRecordId = response.data.payload.AccountId__c;
             if(eventRecordId == this.recordId){
                 this.showToast('Account changes', message);
             }
